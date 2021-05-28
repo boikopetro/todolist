@@ -44,7 +44,7 @@ function App() {
         const tasks = tasksObj[todoListId]
         const task = tasks.find(t => t.id === taskId)
         if (task) {
-            task.isDone = isDone
+            task.isDone = isDone;
             setTasksObj({...tasksObj})
         }
     }
