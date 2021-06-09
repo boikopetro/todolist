@@ -8,7 +8,7 @@ import {Button, Checkbox, Grid, IconButton} from "@material-ui/core";
 
 type TodoListPropsType = {
     id: string
-    title: string
+    title: any
     tasks: Array<TaskType>
     filter: FilterValuesType
     deleteTask: (id: string, todoListId: string) => void

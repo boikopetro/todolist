@@ -98,6 +98,6 @@ export const changeTaskTitleAC = (taskId: string, title: string, todolistId: str
     return {type: 'CHANGE-TASK-TITLE', taskId, title, todolistId}
 }
 
-export const addTodolistAC = (title: string): AddTodoListActionType => {
+export const addTodoListAC = (title: string): AddTodoListActionType => {
     return {type: 'ADD-TODOLIST', title, todolistId: v1()}
 }
