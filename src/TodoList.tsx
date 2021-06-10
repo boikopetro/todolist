@@ -1,40 +1,45 @@
 import React, {ChangeEvent} from "react";
-import {FilterValuesType, TaskType} from "./App";
+import {FilterValuesType, TaskStateType, TaskType} from "./AppWithRedux";
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
 
 import DeleteIcon from "@material-ui/icons/Delete";
 import {Button, Checkbox, Grid, IconButton} from "@material-ui/core";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateType} from "./state/store";
+import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "./state/tasks-reducer";
 
 type TodoListPropsType = {
     id: string
     title: any
-    tasks: Array<TaskType>
     filter: FilterValuesType
-    deleteTask: (id: string, todoListId: string) => void
     changeFilter: (value: FilterValuesType, todoListId: string) => void
-    addTask: (title: string, todoListId: string) => void
-    changeTaskStatus: (taskId: string, isDone: boolean, todoListId: string) => void
-    changeTaskTitle: (taskId: string, newTitle: string, todoListId: string) => void
     removeTodoList: (todListId: string) => void
     changeTodolistTitle: (todListId: string, newTitle: string) => void
 
 }
 
 function TodoList(props: TodoListPropsType) {
+    const tasks = useSelector<AppRootStateType, Array<TaskType>>(state => state.tasks[props.id])
+    const dispatch = useDispatch();
+
     const filterAllHandler = () => props.changeFilter("all", props.id);
     const filterCompletedHandler = () => props.changeFilter("completed", props.id);
     const filterActiveHandler = () => props.changeFilter("active", props.id);
     const removeTodoList = () => {
-        props.removeTodoList(props.id);
+        props.removeTodoList(props.id)
     };
-
-    const addTask = (title: string) => {
-        props.addTask(title, props.id)
-    }
 
     const changeTodolistTitle = (newTitle: string) => {
         props.changeTodolistTitle(props.id, newTitle)
+    }
+
+    let filteredTasks = tasks;
+    if (props.filter === "completed") {
+        filteredTasks = filteredTasks.filter(t => t.isDone === true)
+    }
+    if (props.filter === "active") {
+        filteredTasks = filteredTasks.filter(t => t.isDone === false)
     }
 
     return (
@@ -46,18 +51,22 @@ function TodoList(props: TodoListPropsType) {
 
 
             </h3>
-            <AddItemForm addItem={addTask}/>
+            <AddItemForm addItem={(title) => {
+                dispatch(addTaskAC(title, props.id))
+            }
+            }/>
             <div>
                 {
-                    props.tasks.map(task => {
+                    filteredTasks.map(task => {
                         const deleteTaskHandler = () => {
-                            props.deleteTask(task.id, props.id)
+                            dispatch(removeTaskAC(task.id, props.id));
                         }
                         const onChangeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-                            props.changeTaskStatus(task.id, e.currentTarget.checked, props.id)
+                            let newIsDoneValue = e.currentTarget.checked;
+                            dispatch(changeTaskStatusAC(task.id, newIsDoneValue, props.id));
                         }
                         const onChangeTitleHandler = (newValue: string) => {
-                            props.changeTaskTitle(task.id, newValue, props.id)
+                            dispatch(changeTaskTitleAC(task.id, newValue, props.id))
                         }
                         return (
                             <div key={task.id} className={task.isDone ? "done" : ""}>
@@ -81,7 +90,7 @@ function TodoList(props: TodoListPropsType) {
                         size={props.filter === "all" ? "small" : "medium"}
                         color={props.filter === "all" ? "primary" : "default"}
                         onClick={filterAllHandler}
-                        style={{margin:"3px"}}
+                        style={{margin: "3px"}}
                 >All
 
                 </Button>
@@ -90,7 +99,7 @@ function TodoList(props: TodoListPropsType) {
                         size={props.filter === "active" ? "small" : "medium"}
                         color={props.filter === "active" ? "primary" : "default"}
                         onClick={filterActiveHandler}
-                        style={{margin:"3px"}}
+                        style={{margin: "3px"}}
                 >Active
                 </Button>
 
@@ -99,7 +108,7 @@ function TodoList(props: TodoListPropsType) {
                         size={props.filter === "completed" ? "small" : "medium"}
                         color={props.filter === "completed" ? "primary" : "default"}
                         onClick={filterCompletedHandler}
-                        style={{margin:"3px"}}
+                        style={{margin: "3px"}}
                 >Completed
                 </Button>
 

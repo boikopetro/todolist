@@ -1,4 +1,4 @@
-import {FilterValuesType, TaskStateType, TodoListsTypes} from "../App";
+import {TaskStateType} from "../AppWithRedux";
 import {v1} from "uuid";
 import {AddTodoListActionType, RemoveTodoListActionType} from "./todolists-reducer";
 
@@ -33,7 +33,9 @@ export type ChangeTaskTitleActionType = {
     todolistId: string
 }
 
-export const tasksReducer = (state: TaskStateType, action: UnionActionType): TaskStateType => {
+const initialState: TaskStateType = {};
+
+export const tasksReducer = (state: TaskStateType = initialState, action: UnionActionType): TaskStateType => {
     switch (action.type) {
         case 'REMOVE-TASK': {
             const stateCopy = {...state};
@@ -53,10 +55,7 @@ export const tasksReducer = (state: TaskStateType, action: UnionActionType): Tas
         case 'CHANGE-TASK-STATUS': {
             const stateCopy = {...state};
             const tasks = stateCopy[action.todolistId];
-            const task = tasks.find(t => t.id === action.taskId)
-            if (task) {
-                task.isDone = action.isDone;
-            }
+            stateCopy[action.todolistId] = tasks.map(t => t.id === action.taskId ? {...t, isDone: action.isDone} : t)
             return stateCopy;
         }
         case 'CHANGE-TASK-TITLE': {
@@ -64,7 +63,7 @@ export const tasksReducer = (state: TaskStateType, action: UnionActionType): Tas
             const tasks = stateCopy[action.todolistId];
             const task = tasks.find(t => t.id === action.taskId);
             if (task) {
-                task.title = action.title;
+                task.title = action.title
             }
             return stateCopy;
         }
@@ -75,11 +74,11 @@ export const tasksReducer = (state: TaskStateType, action: UnionActionType): Tas
         }
         case "REMOVE-TODOLIST": {
             const stateCopy = {...state};
-            delete stateCopy[action.id]
+            delete stateCopy[action.id];
             return stateCopy;
         }
         default:
-            throw new Error("I don't understand this type")
+            return state;
     }
 }
 

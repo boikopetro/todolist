@@ -6,13 +6,13 @@ import {
     todoListsReducer
 } from './todolists-reducer';
 import {v1} from 'uuid';
-import {FilterValuesType, TodoListsTypes} from '../App';
+import {FilterValuesType, TodoListsType} from '../AppWithRedux';
 
 test('correct todolist should be removed', () => {
     let todoListId1 = v1();
     let todoListId2 = v1();
 
-    const startState: TodoListsTypes = [
+    const startState: TodoListsType = [
         {id: todoListId1, title: "What to learn", filter: "all"},
         {id: todoListId2, title: "What to buy", filter: "all"}
     ]
@@ -30,7 +30,7 @@ test('correct todolist should be added', () => {
 
     let newTodoListTitle = "New Todolist";
 
-    const startState: TodoListsTypes = [
+    const startState: TodoListsType = [
         {id: todoListId1, title: "What to learn", filter: "all"},
         {id: todoListId2, title: "What to buy", filter: "all"}
     ]
@@ -48,7 +48,7 @@ test('correct todolist should change its name', () => {
 
     let newTodoListTitle = "New Todolist";
 
-    const startState: TodoListsTypes = [
+    const startState: TodoListsType = [
         {id: todoListId1, title: "What to learn", filter: "all"},
         {id: todoListId2, title: "What to buy", filter: "all"}
     ]
@@ -68,7 +68,7 @@ test('correct filter of todolist should be changed', () => {
 
     let newFilter: FilterValuesType = "completed";
 
-    const startState: TodoListsTypes = [
+    const startState: TodoListsType = [
         {id: todolistId1, title: "What to learn", filter: "all"},
         {id: todoListId2, title: "What to buy", filter: "all"}
     ]
