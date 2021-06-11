@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import './App.css';
 import TodoList from "./TodoList";
 import {AddItemForm} from "./AddItemForm";
@@ -29,28 +29,30 @@ export type TaskStateType = {
 }
 
 function AppWithRedux() {
+    console.log("app")
+
     const todoLists = useSelector<AppRootStateType, TodoListsType>(state => state.todoLists)
     const dispatch = useDispatch();
 
-    const removeTodoList = (todoListId: string) => {
+    const removeTodoList = useCallback((todoListId: string) => {
         const action = removeTodoListAC(todoListId);
         dispatch(action);
-    };
+    },[dispatch]);
 
-    const changeTodoListTitle = (todListId: string, newTitle: string) => {
+    const changeTodoListTitle = useCallback((todListId: string, newTitle: string) => {
         const action = changeTodoListTitleAC(todListId, newTitle);
         dispatch(action);
-    };
+    },[dispatch]);
 
-    function changeFilter(value: FilterValuesType, todoListId: string) {
+    const changeFilter = useCallback((value: FilterValuesType, todoListId: string) => {
         const action = changeTodoListFilterAC(value, todoListId);
         dispatch(action);
-    };
+    },[dispatch]);
 
-    const addTodoList = (title: string) => {
+    const addTodoList = useCallback((title: string) => {
         const action = addTodoListAC(title);
         dispatch(action);
-    };
+    },[dispatch]);
 
 
     return (
@@ -72,8 +74,6 @@ function AppWithRedux() {
                 </Grid>
                 <Grid container spacing={10}>
                     {todoLists.map((el) => {
-
-
                         return <Grid item>
                             <Paper elevation={9} style={{width: "300px", padding: "15px", borderRadius: "10px"}}>
                                 <TodoList

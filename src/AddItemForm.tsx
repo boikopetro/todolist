@@ -1,14 +1,19 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
-import {Button, IconButton, TextField} from "@material-ui/core";
+import {IconButton, TextField} from "@material-ui/core";
 import {PlaylistAdd} from "@material-ui/icons";
 
-export const AddItemForm = (props: AddItemFormPropsType) => {
+type AddItemFormPropsType = {
+    addItem: (title: string) => void
+}
+
+export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
+    console.log("item")
     const [newTaskTitle, setNewTaskTitle] = useState("");
     let [error, setError] = useState<null | string>(null);
     const onNewTitleChangeHandler = (e: ChangeEvent<HTMLInputElement>) => setNewTaskTitle(e.currentTarget.value);
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (error) {
+        if (error !== null) {
             setError(null)
         }
         if (e.charCode === 13) {
@@ -43,7 +48,4 @@ export const AddItemForm = (props: AddItemFormPropsType) => {
             <PlaylistAdd fontSize="large"/>
         </IconButton>
     </div>
-}
-type AddItemFormPropsType = {
-    addItem: (title: string) => void
-}
+});
